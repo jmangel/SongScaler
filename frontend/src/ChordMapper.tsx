@@ -595,6 +595,12 @@ const HALF_DIMINISHED_MODES: Array<RelativeMode> = [
     offset: 0,
   },
 ]
+const SUS_MODES: Array<RelativeMode> = [
+  {
+    name: 'mixolydian',
+    offset: 0,
+  },
+]
 const CHORD_MAPPINGS = [
   {
     quality: '-',
@@ -614,7 +620,10 @@ const CHORD_MAPPINGS = [
   },
   {
     quality: '',
-    possibleModes: MAJOR_MODES,
+    possibleModes: MAJOR_MODES.concat([{
+      name: 'mixolydian',
+      offset: 0,
+    }]),
   },
   {
     quality: '6',
@@ -632,7 +641,49 @@ const CHORD_MAPPINGS = [
         offset: 0,
       },
       {
-        name: 'phrygian dominant',
+        name: 'h/w diminished',
+        offset: 0,
+      },
+      {
+        name: 'phrygian dominant', // == 'mixolydian b9 b13'
+        offset: 0,
+      },
+      // could do altered for tritone sub, but the 5 doesn't fit
+      // {
+      //   name: 'altered', // for tritone sub
+      //   offset: 0,
+      // },
+      {
+        name: 'lydian dominant', // for tritone sub
+        offset: 0,
+        // this always works for tritone sub of V/ii
+        // "If you imagine that the A7 is the “V of ii,”
+        // meaning that you pretend the ii chord is a minor i chord, you
+        // can draw the same conclusions about the note relationships of the
+        // Eb7 and the A7. It’s the same concept. The Eb7 would imply an A7alt."
+        // A7alt == Bb mm == Eb lydian dominant
+      },
+      {
+        name: 'mixolydian b13', // for V7/ii instead of vi http://hubguitar.com/improv/dealing-with-secondary-dominants
+        offset: 0,
+
+      },
+      {
+        name: 'altered',
+        offset: 0,
+      },
+      // according to iReal Pro
+      {
+        name: 'whole-tone', // #5 might clash
+        offset: 0,
+      },
+    ]
+  },
+  {
+    quality: '9',
+    possibleModes: [
+      {
+        name: 'mixolydian',
         offset: 0,
       },
       // could do altered for tritone sub, but the 5 doesn't fit
@@ -654,16 +705,97 @@ const CHORD_MAPPINGS = [
         name: 'mixolydian b13', // for V7/ii instead of vi http://hubguitar.com/improv/dealing-with-secondary-dominants
         offset: 0,
       },
+      // according to iReal Pro
+      {
+        name: 'whole-tone', // #5 might clash
+        offset: 0,
+      },
     ]
   },
   {
-    quality: 'sus',
+    quality: 'add9',
+    possibleModes: MAJOR_MODES.concat([{
+      name: 'mixolydian',
+      offset: 0,
+    }]),
+  },
+  {
+    quality: '11',
     possibleModes: [
       {
         name: 'mixolydian',
         offset: 0,
       },
     ]
+  },
+  {
+    quality: '13',
+    possibleModes: [
+      {
+        name: 'mixolydian',
+        offset: 0,
+      },
+      {
+        name: 'lydian dominant',
+        offset: 0,
+      },
+    ]
+  },
+  {
+    quality: 'sus',
+    possibleModes: SUS_MODES
+  },
+  {
+    quality: '7sus',
+    possibleModes: SUS_MODES
+  },
+  {
+    quality: 'sus7',
+    possibleModes: SUS_MODES
+  },
+  {
+    quality: '7b9sus',
+    possibleModes: SUS_MODES.concat([{
+      name: 'phrygian',
+      offset: 0,
+    }]),
+  },
+  {
+    quality: 'sus7b9',
+    possibleModes: SUS_MODES.concat([{
+      name: 'phrygian',
+      offset: 0,
+    }]),
+  },
+  {
+    quality: '9sus',
+    possibleModes: SUS_MODES
+  },
+  {
+    quality: 'sus9',
+    possibleModes: SUS_MODES
+  },
+  {
+    quality: '13sus',
+    possibleModes: SUS_MODES
+  },
+  {
+    quality: 'sus13',
+    possibleModes: SUS_MODES
+  },
+  {
+    quality: '7b13sus',
+    possibleModes: {
+      name: 'phrygian dominant', // == 'mixolydian b9 b13'
+      offset: 0,
+    },
+  },
+  {
+    quality: 'sus7b13',
+    possibleModes: {
+      name: 'phrygian dominant', // == 'mixolydian b9 b13'
+      offset: 0,
+    },
   },
   {
     quality: 'susb9',
@@ -721,7 +853,34 @@ const CHORD_MAPPINGS = [
     ]
   },
   {
+    quality: '^9#11',
+    possibleModes: [
+      {
+        name: 'lydian',
+        offset: 0,
+      },
+    ]
+  },
+  {
     quality: '7#11',
+    possibleModes: [
+      {
+        name: 'lydian dominant',
+        offset: 0,
+      },
+    ]
+  },
+  {
+    quality: '9#11',
+    possibleModes: [
+      {
+        name: 'lydian dominant',
+        offset: 0,
+      },
+    ]
+  },
+  {
+    quality: '13#11',
     possibleModes: [
       {
         name: 'lydian dominant',
@@ -760,7 +919,11 @@ const CHORD_MAPPINGS = [
       {
         name: 'h/w diminished',
         offset: 0,
-      }
+      },
+      {
+        name: 'altered', // #5 might clash
+        offset: 0,
+      },
     ]
   },
   {
@@ -783,6 +946,10 @@ const CHORD_MAPPINGS = [
         name: 'mixolydian b13',
         offset: 0,
       },
+      {
+        name: 'altered', // b13 often implies alt
+        offset: 0,
+      },
       ...AUGMENTED_MODES.map((possibleMode) => {
         return {
           ...possibleMode,
@@ -792,6 +959,19 @@ const CHORD_MAPPINGS = [
             ),
         }
       }),
+    ]
+  },
+  {
+    quality: '7b9b13',
+    possibleModes: [
+      {
+        name: 'altered', // b13 often implies alt
+        offset: 0,
+      },
+      {
+        name: 'phrygian dominant', // == 'mixolydian b9 b13'
+        offset: 0,
+      },
     ]
   },
   {
@@ -828,6 +1008,7 @@ const CHORD_MAPPINGS = [
 
 export const lowerChordToneIntervalInSemitones = (chordQuality: string) => {
   const thirdSemitones = (new RegExp(/sus/)).test(chordQuality) ? 5 : (new RegExp(/-|o|h/)).test(chordQuality) ? 3 : 4;
+  // do we need to handle when the scale selected has a clashing implied 5? ie, altered scale over 7b9
   const fifthSemitones = (new RegExp(/o|h|b5/)).test(chordQuality) ? 6 : (new RegExp(/#5|\+/)).test(chordQuality) ? 8 : 7;
   const seventhSemitones = (new RegExp(/\^/)).test(chordQuality) ? 11 : (new RegExp(/o|6/)).test(chordQuality) ? 9 : 10;
 
