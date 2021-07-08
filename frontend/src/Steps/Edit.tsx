@@ -31,6 +31,7 @@ const Edit: React.FC<{
         Key filled!
       </Alert>
       {chordRowObjects.map((chordRowObject, rowIndex) => <ChordRow
+        index={rowIndex}
         chordRowObject={chordRowObject}
         onRowChange={(newValue: string, key: ChordRowObjectRequiredKeys) => handleRowChange(rowIndex, newValue, key)}
         monochromaticSchemes={monochromaticSchemes}

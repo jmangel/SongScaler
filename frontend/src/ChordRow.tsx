@@ -4,6 +4,7 @@ import scalesForChord, { NamedScale, ROOT_SCALE_READABLE_SHORTENINGS } from './C
 import parseChordString from './ChordParser'
 import scaleToHexColor, { MonochromaticPossibleRootScale } from './ScaleColorer';
 import tinycolor from 'tinycolor2';
+import ChordPianoVisualization from './PianoVisualization';
 export interface ChordRowObject {
   chordNote: string;
   chordQuality: string;
@@ -12,6 +13,7 @@ export interface ChordRowObject {
   selectedScaleRoot: string;
   availableTensions: string;
   beats: string;
+  selectedScaleObject?: NamedScale;
 }
 
 type RequiredKeys<T> = { [k in keyof T]-?: undefined extends T[k] ? never : k }[keyof T];
@@ -34,17 +36,19 @@ export const scalesForChordRowObject = (chordRowObject: ChordRowObject): Array<N
 }
 
 const ChordRow: React.FC<{
+  index: number,
   chordRowObject: ChordRowObject,
   onRowChange: (newValue: string, key: ChordRowObjectRequiredKeys) => void,
   monochromaticSchemes: { [key in MonochromaticPossibleRootScale]: string }[],
   fillWithKey: (keyNote: string, keyScale: string) => void,
 }> = ({
+  index,
   chordRowObject,
   onRowChange,
   monochromaticSchemes,
   fillWithKey,
 }) => {
-  const { chordNote, chordQuality, bassNote, selectedScale, selectedScaleRoot, availableTensions } = chordRowObject;
+  const { chordNote, chordQuality, bassNote, selectedScale, selectedScaleRoot, availableTensions, selectedScaleObject } = chordRowObject;
 
   const [rowExpanded, setRowExpanded] = useState(false);
 
@@ -58,7 +62,7 @@ const ChordRow: React.FC<{
     onRowChange(parsedChordString[2], 'bassNote');
   }
 
-  const selectedNamedScale = scales.find((namedScale: NamedScale) => namedScale.scaleName === selectedScale && (
+  const selectedNamedScale = selectedScaleObject || scales.find((namedScale: NamedScale) => namedScale.scaleName === selectedScale && (
     namedScale.scaleNotes[0] === (selectedScaleRoot || chordNote)
   ));
 
@@ -177,6 +181,13 @@ const ChordRow: React.FC<{
               </span>
             </Row>
           )
+        )}
+        {rowExpanded && (
+          <Row className={'expanded-chord-row py-3 justify-content-center border-top'}>
+            <ChordPianoVisualization
+              chordRowObject={chordRowObject}
+            />
+          </Row>
         )}
       </Col>
     </Row>

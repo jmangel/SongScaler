@@ -1,0 +1,6 @@
+@import "./styles/Global.css";
+
+.ReactPiano__Key--active {
+  background-color: var(--main-bg-color);
+  border-color: var(--main-bg-color) !important;
+}
