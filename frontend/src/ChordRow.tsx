@@ -12,6 +12,7 @@ export interface ChordRowObject {
   selectedScaleRoot: string;
   availableTensions: string;
   beats: string;
+  selectedScaleObject?: NamedScale;
 }
 
 type RequiredKeys<T> = { [k in keyof T]-?: undefined extends T[k] ? never : k }[keyof T];
@@ -44,7 +45,7 @@ const ChordRow: React.FC<{
   monochromaticSchemes,
   fillWithKey,
 }) => {
-  const { chordNote, chordQuality, bassNote, selectedScale, selectedScaleRoot, availableTensions } = chordRowObject;
+  const { chordNote, chordQuality, bassNote, selectedScale, selectedScaleRoot, availableTensions, selectedScaleObject } = chordRowObject;
 
   const [rowExpanded, setRowExpanded] = useState(false);
 
@@ -58,7 +59,7 @@ const ChordRow: React.FC<{
     onRowChange(parsedChordString[2], 'bassNote');
   }
 
-  const selectedNamedScale = scales.find((namedScale: NamedScale) => namedScale.scaleName === selectedScale && (
+  const selectedNamedScale = selectedScaleObject || scales.find((namedScale: NamedScale) => namedScale.scaleName === selectedScale && (
     namedScale.scaleNotes[0] === (selectedScaleRoot || chordNote)
   ));
 

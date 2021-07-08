@@ -5,3 +5,5 @@ declare module 'worker-loader!*' {
 
   export = WebpackWorker;
 }
+
+declare module 'react-piano';

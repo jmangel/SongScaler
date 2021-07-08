@@ -97,6 +97,13 @@ export const beatIsOnNewMeasure = (measureInfos: MeasureInfo[], beatIndex: numbe
   })
 }
 
+const selectedScaleObject = (chordRowObject: ChordRowObject) => {
+  const scales = scalesForChordRowObject(chordRowObject);
+  return scales.find((namedScale) => namedScale.scaleName === chordRowObject.selectedScale && (
+    namedScale.scaleNotes[0] === (chordRowObject.selectedScaleRoot || chordRowObject.chordNote)
+  ));
+}
+
 const App: React.FC = () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js').then(registration => {
@@ -119,7 +126,12 @@ const App: React.FC = () => {
   const { a, c, t, i, s, m, k, b } = query;
 
   const startingChordRowObjects = (c) ? parseCsvifiedChordRowObjects(c) : (a as Array<string> || []).map(parseStringifiedChordRowObject);
-  const [chordRowObjects, setChordRowObjects] = useState(startingChordRowObjects);
+  const processedChordRowObjects = startingChordRowObjects.map((chordRowObject) => {
+    chordRowObject.selectedScaleObject = selectedScaleObject(chordRowObject);
+    return chordRowObject;
+  })
+
+  const [chordRowObjects, setChordRowObjects] = useState(processedChordRowObjects);
   if (a) setQuery({ a: undefined }, 'pushIn');
   if (c === '') setQuery({ c: csvifyChordRowObjects(chordRowObjects) }, 'pushIn');
 
@@ -333,6 +345,8 @@ const App: React.FC = () => {
         if (matchingScale != undefined) {
           chordRowObject.selectedScaleRoot = matchingScale.scaleNotes[0];
           chordRowObject.selectedScale = matchingScale.scaleName;
+
+          chordRowObject.selectedScaleObject = matchingScale;
         }
       }
 
@@ -354,8 +368,10 @@ const App: React.FC = () => {
 
   const handleRowChange = (rowIndex: number, newValue: string, key: ChordRowObjectRequiredKeys): void => {
     let newChordRows = chordRowObjects.slice()
-    newChordRows[rowIndex][key] = newValue
-    setChordRowObjects(newChordRows)
+    const newChordRow = newChordRows[rowIndex];
+    newChordRow[key] = newValue
+    newChordRow.selectedScaleObject = selectedScaleObject(newChordRow);
+    setChordRowObjects(newChordRows);
   }
 
   const navigateToNextStep = () => {
