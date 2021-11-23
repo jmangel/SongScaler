@@ -105,6 +105,8 @@ const SidebarMenu: React.FC<{
   const [editingTitle, setEditingTitle, editingTitleRef] = useStateRef(false);
   const toggleTitleModal = () => setEditingTitle(!editingTitle);
 
+  const [requestedPersistence, setRequestedPersistence] = useState(false);
+
   async function loadSongTitles() {
     const db = await openDb();
 
@@ -123,6 +125,20 @@ const SidebarMenu: React.FC<{
 
     pushSavedSong(stringifiedQuery);
     loadSongTitles();
+
+    // Check if site's storage has been marked as persistent
+    if (navigator.storage && navigator.storage.persist) {
+      const isPersisted = await navigator.storage.persisted();
+      console.warn(`Persisted storage preexisting: ${isPersisted}`);
+
+      if (!isPersisted && !requestedPersistence) {
+        // Request persistent storage for site
+        setRequestedPersistence(true);
+        const persistanceGranted = await navigator.storage.persist();
+        console.warn(`Persisted storage granted: ${persistanceGranted}`);
+      }
+    }
+
   }
 
   async function deleteStoredSong(songTitle: IDBValidKey) {
