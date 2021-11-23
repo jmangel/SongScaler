@@ -109,6 +109,10 @@ hr {
   font-size: 1.2rem;
 }
 
+.dropdown-toggle[aria-expanded="true"]:after {
+  transform: rotate(180deg);
+  }
+
 .expanded-chord-row {
   background-color: #355C68;
 }
